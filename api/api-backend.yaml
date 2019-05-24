@@ -1,0 +1,206 @@
+openapi: 3.0.2
+info:
+  title: TP-Contest Backend
+  version: 1.0.0
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/tp-contest/NewTP-COntestAPI/1.0.0
+tags:
+  - name: Human
+  - name: Contest
+paths:
+  /Human/Create:
+    post:
+      tags:
+      - Human
+      operationId: human_create
+      summary: Lets register user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserData'
+        required: true
+      responses:
+        '200':
+          description: Registration success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionIdObject'
+        '422':
+          description: User is already created
+  /Contest/Create:
+    post:
+      tags:
+      - Contest
+      operationId: create_contest
+      summary: Lets create task
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ContestCreation'
+      parameters:
+        - name: SessionId
+          in: query
+          description: user session id
+          required: true
+          schema:
+            $ref: '#/components/schemas/IdType'
+      responses:
+        '200':
+          description: Creation success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContestIdObject'
+        '422':
+          description: Invalid data
+  /Contest/SendTask:
+    post:
+      tags:
+      - Contest
+      operationId: send_task
+      summary: Lets start some contest
+      parameters:
+        - name: SessionId
+          in: query
+          description: user session id
+          required: true
+          schema:
+            $ref: '#/components/schemas/IdType'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PackageCreation'
+        required: true
+      responses:
+        200:
+          description: Start success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageId'
+        422:
+          description: Invalid data
+  /Contest/GetSolution:
+    get:
+      tags:
+      - Contest
+      operationId: get_solution
+      summary: Lets get solution of our contest
+      parameters:
+      - name: SessionId
+        in: query
+        description: user for solution
+        schema:
+            $ref: '#/components/schemas/IdType'
+        required: true
+      - name: ContestId
+        in: query
+        description: task for solution
+        schema:
+          $ref: '#/components/schemas/IdType'
+        required: true
+      responses:
+        '200':
+          description: Solution success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Solution'
+        '400':
+          description: Invalid Contest
+        '422':
+          description: Invalid data
+components:
+  schemas:
+    UserData:
+      type: object
+      required: 
+        - name
+        - password
+      properties:
+        name:
+          type: string
+          format: string
+          example: "Dr. Pepper"
+        password:
+          type: string
+          format: string
+          example: "0123456789abcdf"
+    ContestCreation:
+      type: object
+      required: 
+        - file_input
+        - file_output
+      properties:
+        file_input:
+          type: string
+          format: string
+          example: "This is Input file"
+        file_output:
+          type: string
+          format: string
+          example: "This is Output file"
+        description:
+          type: string
+          format: string
+          example: "This is Description"
+    PackageCreation:
+      type: object
+      required: 
+        - file
+        - contest_id
+      properties:
+        file:
+          type: string
+          format: string
+          example: "This is Task file"
+        contest_id:
+          type: integer
+          format: unsigned int
+          minimum: 0
+          example: 532
+    Solution:
+      type: object
+      required: 
+        - log
+        - result
+      properties:
+        log:
+          type: string
+          format: string
+          example: "This is log file for solution"
+        result:
+          type: string
+          format: string
+          example: "This is result for solution"
+    ContestIdObject:
+      type: object
+      required: 
+        - ContestId
+      properties:
+        ContestId:
+          $ref: '#/components/schemas/IdType'
+    SessionIdObject:
+      type: object
+      required: 
+        - SessionId
+      properties:
+        SessionId:
+          $ref: '#/components/schemas/IdType'
+    PackageId:
+      type: object
+      required:
+        - PackageId
+      properties:
+        PackageId:
+          $ref: '#/components/schemas/IdType'
+    IdType:
+      type: integer
+      minimum: 0
+      example: 42
