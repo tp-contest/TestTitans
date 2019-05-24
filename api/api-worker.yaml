@@ -1,0 +1,86 @@
+openapi: 3.0.2
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/kirilllivanov/tp-contest-worker/1.0.0
+info:
+  version: "1.0.0"
+  title: TP-Contest Worker
+tags:
+  - name: Worker
+paths:
+  /freeSlots:
+    get:
+      tags:
+        - Worker
+      operationId: free_slots
+      responses:
+        '200':
+          description: List of free slots
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slots'
+  /sendTask:
+    post:
+      tags:
+        - Worker
+      operationId: send_task
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/Tasks'
+        description: Inventory item to add
+        required: true
+      responses:
+        '201':
+          description: Task is created
+        '409':
+          description: Task is already exists
+components:
+  schemas:
+    Tasks:
+      type: array
+      items:
+        $ref: '#/components/schemas/Task'
+    Task:
+      type: object
+      required:
+        - task_id
+        - user_id
+        - contest_id
+        - task_file_id
+      properties:
+        task_id:
+          type: integer
+          minimum: 0
+          example: 42
+        user_id:
+          type: integer
+          minimum: 0
+          example: 42
+        contest_id:
+          type: integer
+          minimum: 0
+          example: 42
+        task_file_id:
+          type: integer
+          minimum: 0
+          example: 73
+    Slots:
+      type: array
+      items:
+        $ref: '#/components/schemas/Slot'
+    Slot:
+      type: object
+      required: 
+        - name
+        - count
+      properties:
+        name:
+          type: string
+          example: gcc
+        count:
+          type: integer
+          minimum: 0
+          example: 5
