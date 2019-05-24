@@ -1,0 +1,584 @@
+openapi: 3.0.2
+servers:
+  - description: TP
+    url: https://virtserver.swaggerhub.com/TechnoPark/PickleRick/1.0.1
+info:
+  version: "1.0.1"
+  title: Pickle Rick API
+tags:
+  - name: Scheduler
+  - name: Database
+  - name: Storage
+paths:
+  /scheduler/sendTask:
+    post:
+      tags:
+        - Scheduler
+      operationId: send_task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        '200':
+          description: OK
+  /database/getUser:
+    post:
+      tags:
+        - Database
+      operationId: get_user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserData'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: OK
+        '404':
+          description: User not found
+  /database/createUser:
+    post:
+      tags:
+        - Database
+      operationId: createuser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserData'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: OK
+        '409':
+          description: user is already created
+  /database/getSessionId:
+    get:
+      tags:
+        - Database
+      operationId: get_session_id
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSessionId'
+          description: OK
+        '404':
+          description: Session ID not found
+  /database/updateSessionId:
+    post:
+      tags:
+        - Database
+      operationId: update_session_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSessionId'
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Session ID not found
+  /database/createSessionId:
+    post:
+      tags:
+        - Database
+      operationId: create_session_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSessionId'
+      responses:
+        '201':
+          description: OK
+  /database/getContest:
+    get:
+      tags:
+        - Database
+      operationId: get_contest
+      parameters:
+        - name: contest_id
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contest'
+          description: OK
+        '404':
+          description: Contest not found
+  /database/createContest:
+    post:
+      tags:
+        - Database
+      operationId: create_contest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContestData'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contest'
+          description: ok
+        '409':
+          description: Contest is already created
+  /database/getTask:
+    get:
+      tags:
+        - Database
+      operationId: get_task
+      parameters:
+        - name: task_id
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: OK
+        '404':
+          description: Task not found
+  /database/createTask:
+    post:
+      tags:
+        - Database
+      operationId: create_task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskData'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: OK
+        '409':
+          description: Task is already created
+  /database/getSolution:
+    get:
+      tags:
+        - Database
+      operationId: get_solution
+      parameters:
+        - name: solution_id
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Solution'
+          description: OK
+        '404':
+          description: Solution not found
+  /database/getLastSolution:
+    get:
+      tags:
+        - Database
+      operationId: get_last_solution
+      parameters:
+        - name: task_id
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Solution'
+          description: OK
+        '404':
+          description: Solution not found
+  /database/createSolution:
+    post:
+      tags:
+        - Database
+      operationId: create_solution
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolutionData'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Solution'
+          description: OK
+        '409':
+          description: Solution is already created
+
+
+  /storage/getContestFiles:
+    post:
+      tags:
+        - Storage
+      operationId: get_contest_files
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contest'
+      responses:
+        '200':
+          content:
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/ContestFiles'
+          description: OK
+        '404':
+          description: Files not found
+  /storage/uploadContestFiles:
+    post:
+      tags:
+        - Storage
+      operationId: upload_contest_files
+      parameters:
+        - name: contestCreaterUserId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ContestFiles'
+      responses:
+        '201':
+          description: 'Files uploaded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContestFilesId'
+  /storage/getTaskFile:
+    post:
+      tags:
+        - Storage
+      operationId: get_task_file
+      parameters:
+        - name: contestCreaterUserId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        '200':
+          content:
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/TaskFile'
+          description: OK
+        '404':
+          description: Files not found
+  /storage/uploadTaskFile:
+    post:
+      tags:
+        - Storage
+      operationId: upload_task_file
+      parameters:
+        - name: contestCreaterUserId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+        - name: contestId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+        - name: userId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskFile'
+      responses:
+        '201':
+          description: 'Files uploaded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskFileId'
+  /storage/getSolutionFiles:
+    post:
+      tags:
+        - Storage
+      operationId: getSolutionFiles
+      parameters:
+        - name: contestCreaterUserId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+        - name: contestId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+        - name: userId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Solution'
+      responses:
+        '200':
+          description: 'Files uploaded'
+          content:
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/SolutionFiles'
+  /storage/uploadSolutionFiles:
+    post:
+      tags:
+        - Storage
+      operationId: uploadSolutionFiles
+      parameters:
+        - name: contestCreaterUserId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+        - name: contestId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+        - name: userId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+        - name: taskId
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DatabaseId'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SolutionFiles'
+      responses:
+        '201':
+          description: 'Files uploaded'
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/SolutionFilesId'
+components:
+  schemas:
+    User:
+      allOf:     
+        - $ref: '#/components/schemas/UserId'
+        - $ref: '#/components/schemas/UserData'
+    Contest:
+      allOf:
+        - $ref: '#/components/schemas/ContestId'
+        - $ref: '#/components/schemas/ContestData'
+    Task:
+      allOf:
+        - $ref: '#/components/schemas/TaskId'
+        - $ref: '#/components/schemas/TaskData'
+    Solution:
+      allOf:
+        - $ref: '#/components/schemas/SolutionId'
+        - $ref: '#/components/schemas/SolutionData'
+    UserSessionId:
+      allOf:
+        - $ref: '#/components/schemas/UserId'
+        - $ref: '#/components/schemas/SessionId'
+
+
+    UserId:
+      type: object
+      required:
+        - user_id
+      properties:
+        user_id:
+          $ref: '#/components/schemas/DatabaseId'
+    ContestId:
+      type: object
+      required: 
+        - contest_id
+      properties:
+        contest_id:
+          $ref: '#/components/schemas/DatabaseId'
+    TaskId:
+      type: object
+      required:
+        - task_id
+      properties:
+        task_id:
+          $ref: '#/components/schemas/DatabaseId'
+    SolutionId:
+      type: object
+      required:
+        - solution_id
+      properties:
+        solution_id:
+          $ref: '#/components/schemas/DatabaseId'
+    SessionId:
+      type: object
+      required:
+        - session_id
+      properties:
+        session_id:
+          $ref: '#/components/schemas/DatabaseId'
+
+
+    UserData:
+      type: object
+      required:
+        - user_password
+        - user_name
+      properties:
+        user_password:
+          type: string
+          example: 'Dr. Pepper'
+        user_name:
+          type: string
+          example: 'PickleRick'
+    ContestData:
+      allOf:
+        - $ref: '#/components/schemas/UserId'
+        - $ref: '#/components/schemas/ContestFilesId'
+    TaskData:
+      allOf:
+        - $ref: '#/components/schemas/UserId'
+        - $ref: '#/components/schemas/ContestId'
+        - $ref: '#/components/schemas/TaskFileId'
+    SolutionData:
+      allOf:
+        - $ref: '#/components/schemas/TaskId'
+        - $ref: '#/components/schemas/SolutionFilesId'
+
+    DatabaseId:
+      type: integer
+      minimum: 0
+      example: 42
+
+
+    File:
+      type: string
+      format: binary
+    FileId:
+      type: integer
+      minimum: 0
+      example: 73
+
+    ContestFiles:
+      type: object
+      required:
+        - input_file
+        - output_file
+        - description_file
+      properties: 
+        input_file:
+          $ref: '#/components/schemas/File'
+        output_file:
+          $ref: '#/components/schemas/File'
+        description_file:
+          $ref: '#/components/schemas/File'
+    TaskFile:
+      type: object
+      required:
+        - task_file
+      properties:
+        task_file:
+          $ref: '#/components/schemas/File'
+    SolutionFiles:
+      type: object
+      required: 
+        - log_file
+        - result_file
+      properties: 
+        log_file:
+          $ref: '#/components/schemas/File'
+        result_file:
+          $ref: '#/components/schemas/File'
+
+    ContestFilesId:
+      type: object
+      required:
+        - input_file_id
+        - output_file_id
+        - description_file_id
+      properties:
+        input_file_id:
+          $ref: '#/components/schemas/FileId'
+        output_file_id:
+          $ref: '#/components/schemas/FileId'
+        description_file_id:
+          $ref: '#/components/schemas/FileId'
+    TaskFileId:
+      allOf:
+        - type: object
+          required:
+            - task_file_id
+          properties:
+            task_file_id:
+                $ref: '#/components/schemas/FileId'
+    SolutionFilesId:
+      type: object
+      required:
+        - log_file_id
+        - result_file_id
+      properties:
+        log_file_id:
+          $ref: '#/components/schemas/FileId'
+        result_file_id:
+          $ref: '#/components/schemas/FileId'
